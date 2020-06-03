@@ -76,7 +76,18 @@ namespace Unity.MLAgents
 
         // Lazy initializer pattern, see https://csharpindepth.com/articles/singleton#lazy
         static Lazy<Academy> s_Lazy = new Lazy<Academy>(() => new Academy());
+        static List<Agent> currentAgents = new List<Agent>();
 
+        public void AddAgent(Agent agent)
+        {
+            currentAgents.Add(agent);
+        }
+
+        //TODO run this as JobParallel to increase performance
+        public void DecideActionUpdate()
+        {
+
+        }
         /// <summary>
         ///Reports whether the Academy has been initialized yet.
         /// </summary>
@@ -506,6 +517,7 @@ namespace Unity.MLAgents
             using (TimerStack.Instance.Scoped("DecideAction"))
             {
                 DecideAction?.Invoke();
+
             }
 
             // If the communicator is not on, we need to clear the SideChannel sending queue
