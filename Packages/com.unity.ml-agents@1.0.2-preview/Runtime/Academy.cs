@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 #if UNITY_EDITOR
@@ -8,6 +9,9 @@ using Unity.MLAgents.Inference;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.SideChannels;
 using Unity.Barracuda;
+using Unity.Burst;
+using Unity.Jobs;
+using Unity.Collections;
 
 /**
  * Welcome to Unity Machine Learning Agents (ML-Agents).
@@ -52,8 +56,8 @@ namespace Unity.MLAgents
     /// inference or heuristics.)
     /// </remarks>
     [HelpURL("https://github.com/Unity-Technologies/ml-agents/tree/release_2_docs/" +
-        "docs/Learning-Environment-Design.md")]
-    public class Academy : IDisposable
+             "docs/Learning-Environment-Design.md")]
+    public class Academy : MonoBehaviour, IDisposable
     {
         /// <summary>
         /// Communication protocol version.
@@ -78,16 +82,162 @@ namespace Unity.MLAgents
         static Lazy<Academy> s_Lazy = new Lazy<Academy>(() => new Academy());
         static List<Agent> currentAgents = new List<Agent>();
 
+
         public void AddAgent(Agent agent)
         {
             currentAgents.Add(agent);
         }
 
-        //TODO run this as JobParallel to increase performance
-        public void DecideActionUpdate()
-        {
+        #region Edited by Delivr
 
+        //     // private IEnumerator chunkRebuildRoutine;
+        //     //
+        //     // private void StartJobListener()
+        //     // {
+        //     //     if (chunkRebuildRoutine != null)
+        //     //         StopCoroutine(chunkRebuildRoutine);
+        //     //
+        //     //     chunkRebuildRoutine = RebuildRoutine();
+        //     //
+        //     //     StartCoroutine(chunkRebuildRoutine);
+        //     // }
+        //     public void DecideActionUpdate()
+        //     {
+        //         // Get Decision from Brain
+        //         NativeArray<JobHandle> jobHandleList = new NativeArray<JobHandle>(currentAgents.Count, Allocator.Temp);
+        //         for (var index = 0; index < currentAgents.Count; index++)
+        //         {
+        //             var agent = currentAgents[index];
+        //             JobHandle jobHandle = ReallyToughTaskJob();
+        //             jobHandleList[index] = jobHandle;
+        //         }
+        //
+        //         JobHandle.CompleteAll(jobHandleList);
+        //
+        //         // PostProcess data calculated in Job
+        //         for (var index = 0; index < currentAgents.Count; index++)
+        //         {
+        //             // todo get data from job
+        //            // currentAgents[index].DecideActionPostProcessing();
+        //         }
+        //         jobHandleList.Dispose();
+        //     }
+        //
+        //     private JobHandle ReallyToughTaskJob() {
+        //         var job = new Agent.ReallyToughJob();
+        //         return job.Schedule();
+        //     }
+        //
+        // //  private IEnumerator PostProcessing()
+        // // {
+        // //
+        // //     while(true)
+        // //     {
+        // //         if (currentChunkRebuildJob.IsCompleted)
+        // //         {
+        // //
+        // //         }
+        // //
+        // //         yield return null;
+        // //     }
+        // // }
+        //
+        //     ReallyToughParallelJob reallyToughParallelJob = new ReallyToughParallelJob {
+        //         positionArray = positionArray,
+        //     moveYArray = moveYArray,
+        // };
+
+        // JobHandle jobHandle = reallyToughParallelJob.Schedule(zombieList.Count, 100);
+        // jobHandle.Complete();
+
+        #endregion
+
+        #region Edited by Delivr
+
+        //   public void UpdateAgentDecision()
+        //   {
+        //     //  NativeArray<JobHandle> jobHandleList = new NativeArray<JobHandle>(currentAgents.Count, Allocator.Temp);
+        //
+        //       public NativeArray<NativeArray<float>> agentBrainTempArray;
+        //
+        // for (int i = 0; i <currentAgents.Count; i++)
+        // {
+        //     agentBrainTempArray[i] = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
+        // }
+        //
+
+
+
+        public void UpdateAgentBrain()
+        {
+            Debug.Log("UpdateAgentBrain");
+            // -- this is wrong --
+            // todo new system that simulates nested ativeArrays
+            NativeArray<NativeArray<float>> agentBrainTempArray = new NativeArray<NativeArray<float>>();
+           // NativeArray<NativeArray<float>> allAgentBrainTempArray = new NativeArray<NativeArray<float>>();
+
+           NativeArray<float> x = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+           NativeArray<float> y = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+           NativeArray<float> z = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+
+
+            // set job to calculate agent's decision
+            for (int i = 0; i <currentAgents.Count; i++)
+            {
+                NativeArray<float> b = new NativeArray<float>(3, Allocator.Temp);
+               // b =
+                agentBrainTempArray[i] = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
+            }
+
+            //
+                ReallyToughParallelJob reallyToughParallelJob = new ReallyToughParallelJob {
+                    agentBrainArray = agentBrainTempArray,
+            };
+
+            JobHandle jobHandle = reallyToughParallelJob.Schedule(currentAgents.Count, 4);
+            jobHandle.Complete();
+
+            // update agent's decision
+
+            for (int i = 0; i <currentAgents.Count; i++)
+            {
+                currentAgents[i].DecideActionPostProcessing(agentBrainTempArray[i].ToArray());
+            }
         }
+
+        #endregion
+
+
+        // [BurstCompile]
+        public struct ReallyToughParallelJob : IJobParallelFor
+        {
+            // array of every agent's brain
+            public NativeArray<NativeArray<float>> agentBrainArray;
+
+            public void Execute(int index)
+            {
+                throw new NotImplementedException();
+
+                //  positionArray[0][0] =
+                // make brain to compute
+            }
+
+            // public void Execute(int index) {
+            //     positionArray[index] += new float3(0, moveYArray[index] * deltaTime, 0f);
+            //     if (positionArray[index].y > 5f) {
+            //         moveYArray[index] = -math.abs(moveYArray[index]);
+            //     }
+            //     if (positionArray[index].y < -5f) {
+            //         moveYArray[index] = +math.abs(moveYArray[index]);
+            //     }
+            //     float value = 0f;
+            //     for (int i = 0; i < 1000; i++) {
+            //         value = math.exp10(math.sqrt(value));
+            //     }
+            // }
+        }
+
+
         /// <summary>
         ///Reports whether the Academy has been initialized yet.
         /// </summary>
@@ -101,7 +251,10 @@ namespace Unity.MLAgents
         /// The singleton Academy object.
         /// </summary>
         /// <value>Getting the instance initializes the Academy, if necessary.</value>
-        public static Academy Instance { get { return s_Lazy.Value; } }
+        public static Academy Instance
+        {
+            get { return s_Lazy.Value; }
+        }
 
         // Fields not provided in the Inspector.
 
@@ -251,7 +404,9 @@ namespace Unity.MLAgents
                 // This try-catch is because DontDestroyOnLoad cannot be used in Editor Tests
                 GameObject.DontDestroyOnLoad(m_StepperObject);
             }
-            catch {}
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -403,8 +558,8 @@ namespace Unity.MLAgents
                 catch
                 {
                     Debug.Log($"" +
-                        $"Couldn't connect to trainer on port {port} using API version {k_ApiVersion}. " +
-                        "Will perform inference instead."
+                              $"Couldn't connect to trainer on port {port} using API version {k_ApiVersion}. " +
+                              "Will perform inference instead."
                     );
                     Communicator = null;
                 }
@@ -425,13 +580,13 @@ namespace Unity.MLAgents
 
         void ResetActions()
         {
-            DecideAction = () => {};
-            DestroyAction = () => {};
-            AgentPreStep = i => {};
-            AgentSendState = () => {};
-            AgentAct = () => {};
-            AgentForceReset = () => {};
-            OnEnvironmentReset = () => {};
+            DecideAction = () => { };
+            DestroyAction = () => { };
+            AgentPreStep = i => { };
+            AgentSendState = () => { };
+            AgentAct = () => { };
+            AgentForceReset = () => { };
+            OnEnvironmentReset = () => { };
         }
 
         static void OnQuitCommandReceived()
@@ -516,8 +671,9 @@ namespace Unity.MLAgents
 
             using (TimerStack.Instance.Scoped("DecideAction"))
             {
-                DecideAction?.Invoke();
-
+              //  DecideAction?.Invoke();
+              Debug.Log("DecideActionxd");
+              UpdateAgentBrain();
             }
 
             // If the communicator is not on, we need to clear the SideChannel sending queue
@@ -562,6 +718,7 @@ namespace Unity.MLAgents
                 m_ModelRunners.Add(modelRunner);
                 m_InferenceSeed++;
             }
+
             return modelRunner;
         }
 
@@ -580,7 +737,7 @@ namespace Unity.MLAgents
 
             m_EnvironmentParameters.Dispose();
             m_StatsRecorder.Dispose();
-            SideChannelsManager.UnregisterAllSideChannels();  // unregister custom side channels
+            SideChannelsManager.UnregisterAllSideChannels(); // unregister custom side channels
 
             if (m_ModelRunners != null)
             {

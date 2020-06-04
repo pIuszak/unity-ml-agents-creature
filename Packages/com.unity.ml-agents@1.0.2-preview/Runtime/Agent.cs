@@ -6,6 +6,9 @@ using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Demonstrations;
 using Unity.MLAgents.Policies;
 using Unity.Barracuda;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine.Serialization;
 
 namespace Unity.MLAgents
@@ -14,7 +17,7 @@ namespace Unity.MLAgents
     /// Struct that contains all the information for an Agent, including its
     /// observations, actions and current status.
     /// </summary>
-    internal struct AgentInfo
+    public struct AgentInfo
     {
         /// <summary>
         /// Keeps track of the last vector action taken by the Brain.
@@ -53,7 +56,7 @@ namespace Unity.MLAgents
     /// Struct that contains the action information sent from the Brain to the
     /// Agent.
     /// </summary>
-    internal struct AgentAction
+    public struct AgentAction
     {
         public float[] vectorActions;
     }
@@ -151,12 +154,12 @@ namespace Unity.MLAgents
     ///
     /// </remarks>
     [HelpURL("https://github.com/Unity-Technologies/ml-agents/blob/release_2_docs/" +
-        "docs/Learning-Environment-Design-Agents.md")]
+             "docs/Learning-Environment-Design-Agents.md")]
     [Serializable]
     [RequireComponent(typeof(BehaviorParameters))]
     public class Agent : MonoBehaviour, ISerializationCallbackReceiver
     {
-        IPolicy m_Brain;
+        public IPolicy m_Brain;
         BehaviorParameters m_PolicyFactory;
 
         /// This code is here to make the upgrade path for users using MaxStep
@@ -168,10 +171,8 @@ namespace Unity.MLAgents
             public int maxStep;
         }
 
-        [SerializeField][HideInInspector]
-        internal AgentParameters agentParameters;
-        [SerializeField][HideInInspector]
-        internal bool hasUpgradedFromAgentParameters;
+        [SerializeField] [HideInInspector] internal AgentParameters agentParameters;
+        [SerializeField] [HideInInspector] internal bool hasUpgradedFromAgentParameters;
 
         /// <summary>
         /// The maximum number of steps the agent takes before being done.
@@ -215,8 +216,8 @@ namespace Unity.MLAgents
         /// **Note:** in general, you should limit the differences between the code you execute
         /// during training and the code you run during inference.
         /// </example>
-        [FormerlySerializedAs("maxStep")]
-        [HideInInspector] public int MaxStep;
+        [FormerlySerializedAs("maxStep")] [HideInInspector]
+        public int MaxStep;
 
         /// Current Agent information (message sent to Brain).
         AgentInfo m_Info;
@@ -331,6 +332,7 @@ namespace Unity.MLAgents
             {
                 MaxStep = agentParameters.maxStep;
             }
+
             hasUpgradedFromAgentParameters = true;
         }
 
@@ -362,6 +364,7 @@ namespace Unity.MLAgents
             {
                 MaxStep = agentParameters.maxStep;
             }
+
             hasUpgradedFromAgentParameters = true;
         }
 
@@ -377,6 +380,7 @@ namespace Unity.MLAgents
             {
                 return;
             }
+
             m_Initialized = true;
 
             // Grab the "static" properties for the Agent.
@@ -392,6 +396,7 @@ namespace Unity.MLAgents
             Academy.Instance.DecideAction += DecideAction;
             Academy.Instance.AgentAct += AgentStep;
             Academy.Instance.AgentForceReset += _AgentReset;
+            Academy.Instance.AddAgent(this);
             m_Brain = m_PolicyFactory.GeneratePolicy(Heuristic);
             ResetData();
             Initialize();
@@ -460,6 +465,7 @@ namespace Unity.MLAgents
                 Academy.Instance.AgentAct -= AgentStep;
                 Academy.Instance.AgentForceReset -= _AgentReset;
             }
+
             NotifyAgentDone(DoneReason.Disabled);
             m_Brain?.Dispose();
             m_Initialized = false;
@@ -472,6 +478,7 @@ namespace Unity.MLAgents
                 // The Agent was already marked as Done and should not be notified again
                 return;
             }
+
             m_Info.episodeId = m_EpisodeId;
             m_Info.reward = m_Reward;
             m_Info.done = true;
@@ -482,6 +489,7 @@ namespace Unity.MLAgents
                 collectObservationsSensor.Reset();
                 CollectObservations(collectObservationsSensor);
             }
+
             // Request the last decision with no callbacks
             // We request a decision so Python knows the Agent is done immediately
             m_Brain?.RequestDecision(m_Info, sensors);
@@ -538,6 +546,7 @@ namespace Unity.MLAgents
                 // If everything is the same, don't make any changes.
                 return;
             }
+
             NotifyAgentDone(DoneReason.Disabled);
             m_PolicyFactory.Model = model;
             m_PolicyFactory.InferenceDevice = inferenceDevice;
@@ -553,6 +562,7 @@ namespace Unity.MLAgents
                 // happen in LazyInitialize later.
                 return;
             }
+
             m_Brain?.Dispose();
             m_Brain = m_PolicyFactory.GeneratePolicy(Heuristic);
         }
@@ -750,7 +760,9 @@ namespace Unity.MLAgents
         ///
         /// [GameObject]: https://docs.unity3d.com/Manual/GameObjects.html
         /// </remarks>
-        public virtual void Initialize() {}
+        public virtual void Initialize()
+        {
+        }
 
         /// <summary>
         /// Implement `Heuristic()` to choose an action for this agent using a custom heuristic.
@@ -872,7 +884,7 @@ namespace Unity.MLAgents
             if (!m_Initialized)
             {
                 throw new UnityAgentsException("Call to SendInfoToBrain when Agent hasn't been initialized." +
-                    "Please ensure that you are calling 'base.OnEnable()' if you have overridden OnEnable.");
+                                               "Please ensure that you are calling 'base.OnEnable()' if you have overridden OnEnable.");
             }
 
             if (m_Brain == null)
@@ -888,12 +900,14 @@ namespace Unity.MLAgents
             {
                 Array.Copy(m_Action.vectorActions, m_Info.storedVectorActions, m_Action.vectorActions.Length);
             }
+
             m_ActionMasker.ResetMask();
             UpdateSensors();
             using (TimerStack.Instance.Scoped("CollectObservations"))
             {
                 CollectObservations(collectObservationsSensor);
             }
+
             using (TimerStack.Instance.Scoped("CollectDiscreteActionMasks"))
             {
                 if (m_PolicyFactory.BrainParameters.VectorActionSpaceType == SpaceType.Discrete)
@@ -901,6 +915,7 @@ namespace Unity.MLAgents
                     CollectDiscreteActionMasks(m_ActionMasker);
                 }
             }
+
             m_Info.discreteActionMasks = m_ActionMasker.GetMask();
 
             m_Info.reward = m_Reward;
@@ -1081,7 +1096,9 @@ namespace Unity.MLAgents
         /// by the <see cref="BrainParameters"/> of the agent's associated
         /// <see cref="BehaviorParameters"/> component.
         /// </param>
-        public virtual void OnActionReceived(float[] vectorAction) {}
+        public virtual void OnActionReceived(float[] vectorAction)
+        {
+        }
 
         /// <summary>
         /// Implement `OnEpisodeBegin()` to set up an Agent instance at the beginning
@@ -1089,7 +1106,9 @@ namespace Unity.MLAgents
         /// </summary>
         /// <seealso cref="Initialize"/>
         /// <seealso cref="EndEpisode"/>
-        public virtual void OnEpisodeBegin() {}
+        public virtual void OnEpisodeBegin()
+        {
+        }
 
         /// <summary>
         /// Returns the last action that was decided on by the Agent.
@@ -1164,13 +1183,38 @@ namespace Unity.MLAgents
             }
         }
 
+        #region Edited by Delivr
+
+        // Backup
+
         void DecideAction()
         {
             if (m_Action.vectorActions == null)
             {
                 ResetData();
             }
+
             var action = m_Brain?.DecideAction();
+
+            Debug.Log(action.Length);
+
+            if (action == null)
+            {
+                Array.Clear(m_Action.vectorActions, 0, m_Action.vectorActions.Length);
+            }
+            else
+            {
+                Array.Copy(action, m_Action.vectorActions, action.Length);
+            }
+
+        }
+
+        public void DecideActionPostProcessing(float[] action)
+        {
+            if (m_Action.vectorActions == null)
+            {
+                ResetData();
+            }
 
             if (action == null)
             {
@@ -1181,5 +1225,6 @@ namespace Unity.MLAgents
                 Array.Copy(action, m_Action.vectorActions, action.Length);
             }
         }
+        #endregion
     }
 }

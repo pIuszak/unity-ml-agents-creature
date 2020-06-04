@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+    <e p="C:\Dev\unity-ml-agents-creature" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
-        <e p="AgentPro.cs" t="Include" />
         <e p="Creature" t="Include">
           <e p="Scripts" t="Include">
             <e p="CreatureAgent.cs" t="Include" />
@@ -148,6 +147,14 @@
             </e>
           </e>
         </e>
+        <e p="GettingStarted_Jobs" t="Include">
+          <e p="Testing.cs" t="Include" />
+        </e>
+        <e p="Jobs_GetOutput" t="Include">
+          <e p="TestingJobOutput.cs" t="Include" />
+        </e>
+        <e p="NativeFloatTest.cs" t="Include" />
+        <e p="NewBehaviourScript.cs" t="Include" />
       </e>
       <e p="obj" t="ExcludeRecursive" />
       <e p="Packages" t="ExcludeRecursive">
@@ -316,7 +323,7 @@
           </e>
         </e>
       </e>
-      <e p="Temp/bin" t="ExcludeRecursive" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
       <e p="Tests.csproj" t="IncludeRecursive" />
       <e p="unity-ml-agents-creature.sln" t="IncludeFlat" />
       <e p="Unity.ML-Agents.CommunicatorObjects.csproj" t="IncludeRecursive" />
@@ -325,7 +332,7 @@
       <e p="Unity.ML-Agents.Editor.Tests.csproj" t="IncludeRecursive" />
       <e p="Unity.ML-Agents.Editor.Tests.PublicAPI.csproj" t="IncludeRecursive" />
     </e>
-    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.1/extResources" t="IncludeRecursive" />
-    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.1/resharper-host/local/Transient/ReSharperHost/v201/SolutionCaches/_unity-ml-agents-creature.-1650927436.00" t="ExcludeRecursive" />
+    <e p="C:\Users\pluszak\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\pluszak\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_unity-ml-agents-creature.-1383191734.00" t="ExcludeRecursive" />
   </component>
 </project>

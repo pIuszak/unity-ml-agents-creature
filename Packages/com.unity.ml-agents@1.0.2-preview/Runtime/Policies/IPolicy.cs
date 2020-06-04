@@ -10,7 +10,7 @@ namespace Unity.MLAgents.Policies
     /// will not be taken immediately but will be taken before or when
     /// DecideAction is called.
     /// </summary>
-    internal interface IPolicy : IDisposable
+    public interface IPolicy : IDisposable
     {
         /// <summary>
         /// Signals the Brain that the Agent needs a Decision. The Policy

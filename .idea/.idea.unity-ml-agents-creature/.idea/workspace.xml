@@ -20,8 +20,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d1edb02a-9bb7-464f-94e8-5851350f4651" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.unity-ml-agents-creature/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.unity-ml-agents-creature/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.unity-ml-agents-creature/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.unity-ml-agents-creature/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.unity-ml-agents-creature/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.unity-ml-agents-creature/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Editor/Icons.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/CreatureAcademy_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/CreatureAcademy_timers.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Academy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Academy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Agent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Agent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Policies/IPolicy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Policies/IPolicy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,13 +39,23 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2C24F0C1-857D-4078-B6D4-53F88E061A29/7f/21293dc8/Array.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/NativeFloatTest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Agent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Academy.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Jobs_GetOutput/TestingJobOutput.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/GettingStarted_Jobs/Testing.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Inference/ModelRunner.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/F38C71C8-6AA6-4E29-9D4C-EA9FB7C715E1/cb/8cc9189c/JobHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Tests/Runtime/RuntimeAPITest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Creature/Scripts/CreatureArea.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/F38C71C8-6AA6-4E29-9D4C-EA9FB7C715E1/28/5c9e19e5/Profiler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7A640F6C-B241-40B6-897C-AC910F849430/73/04648224/IDisposable.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Policies/IPolicy.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Creature/Scripts/CreatureAgent.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/AgentPro.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2C24F0C1-857D-4078-B6D4-53F88E061A29/91/3e0b5250/Action.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///C# Console" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Policies/BehaviorParameters.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Policies/BarracudaPolicy.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/F38C71C8-6AA6-4E29-9D4C-EA9FB7C715E1/44/bc0c12de/IJobParallelForTransform.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -46,6 +63,11 @@
         <option value="$PROJECT_DIR$/Assets/Creature/Scripts/CreatureArea.cs" />
         <option value="$PROJECT_DIR$/Assets/Creature/Scripts/CreatureAgent.cs" />
         <option value="$PROJECT_DIR$/Assets/AgentPro.cs" />
+        <option value="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Policies/IPolicy.cs" />
+        <option value="$PROJECT_DIR$/Assets/GettingStarted_Jobs/Testing.cs" />
+        <option value="$PROJECT_DIR$/Assets/BlowJob.cs" />
+        <option value="$PROJECT_DIR$/Assets/NativeFloatTest.cs" />
+        <option value="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Agent.cs" />
         <option value="$PROJECT_DIR$/Packages/com.unity.ml-agents@1.0.2-preview/Runtime/Academy.cs" />
       </list>
     </option>
@@ -61,6 +83,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C#" />
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
@@ -90,6 +113,7 @@
       <workItem from="1590678011667" duration="905000" />
       <workItem from="1591194937410" duration="5000" />
       <workItem from="1591194972785" duration="933000" />
+      <workItem from="1591259289055" duration="18321000" />
     </task>
     <servers />
   </component>
@@ -114,9 +138,24 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1590678021067">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state x="2653" y="241" key="RiderGenerateDialog" timestamp="1591268036002">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2653" y="241" key="RiderGenerateDialog/-1920.0.1920.1080/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1591268036002" />
+    <state x="1969" y="188" key="SettingsEditor" timestamp="1591264143818">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="1969" y="188" key="SettingsEditor/-1920.0.1920.1080/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1591264143818" />
+    <state x="1920" y="0" width="1256" height="1035" key="dock-window-1" timestamp="1591278739482">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="1920" y="0" width="1256" height="1035" key="dock-window-1/-1920.0.1920.1080/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1591278739482" />
+    <state x="3009" y="0" width="838" height="1087" key="dock-window-1/-1920.0.1920.1080/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1591265319020" />
+    <state x="623" y="234" width="672" height="705" key="search.everywhere.popup" timestamp="1591276344803">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup/-1920.0.1536.832/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1590678021067" />
+    <state x="623" y="234" width="672" height="705" key="search.everywhere.popup/-1920.0.1920.1080/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1591276344803" />
+    <state x="2543" y="234" width="672" height="705" key="search.everywhere.popup/-1920.0.1920.1080/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1591266526143" />
   </component>
 </project>
