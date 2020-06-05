@@ -211,15 +211,25 @@ namespace Unity.MLAgents
         // [BurstCompile]
         public struct ReallyToughParallelJob : IJobParallelFor
         {
-            // array of every agent's brain
-            public NativeArray<NativeArray<float>> agentBrainArray;
 
             public void Execute(int index)
             {
-                throw new NotImplementedException();
+                NativeArray<float> x = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+                NativeArray<float> y = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+                NativeArray<float> z = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+                NativeArray<float> tempBrain = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
 
-                //  positionArray[0][0] =
-                // make brain to compute
+                // set job to calculate agent's decision
+                for (int i = 0; i <currentAgents.Count; i++)
+                {
+                    //NativeArray<float> b = new NativeArray<float>(3, Allocator.Temp);
+                    var b = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
+                    x[i] = b[0];
+                    y[i] = b[1];
+                    z[i] = b[2];
+                    // agentBrainTempArray[i] = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
+                }
+
             }
 
             // public void Execute(int index) {
