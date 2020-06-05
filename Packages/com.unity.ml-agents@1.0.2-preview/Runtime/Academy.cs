@@ -5,6 +5,7 @@ using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
 using Unity.MLAgents.Inference;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.SideChannels;
@@ -57,7 +58,7 @@ namespace Unity.MLAgents
     /// </remarks>
     [HelpURL("https://github.com/Unity-Technologies/ml-agents/tree/release_2_docs/" +
              "docs/Learning-Environment-Design.md")]
-    public class Academy : MonoBehaviour, IDisposable
+    public class Academy : MonoBehaviour
     {
         /// <summary>
         /// Communication protocol version.
@@ -90,7 +91,6 @@ namespace Unity.MLAgents
         }
         public void UpdateAgentDecision()
         {
-            Debug.Log("UpdateAgentBrain");
 
             NativeArray<float> x = new NativeArray<float>(currentAgents.Count, Allocator.TempJob);
             NativeArray<float> y = new NativeArray<float>(currentAgents.Count, Allocator.TempJob);
@@ -103,7 +103,7 @@ namespace Unity.MLAgents
                 z = z
             };
 
-            JobHandle jobHandle = reallyToughParallelJob.Schedule(currentAgents.Count, 4);
+            JobHandle jobHandle = reallyToughParallelJob.Schedule(currentAgents.Count, 20);
             jobHandle.Complete();
 
             // update agent's decision
@@ -112,26 +112,39 @@ namespace Unity.MLAgents
             {
                 currentAgents[i].DecideActionPostProcessing(new float[3] {x[i], y[i], z[i]});
             }
+
+            x.Dispose();
+            y.Dispose();
+            z.Dispose();
         }
+
+        //[BurstCompile]
+        private struct ReallyToughParallelJob : IJobParallelFor
+        {
+            // back / forward
+            public NativeArray<float> x;
+            // left / right
+            public NativeArray<float> y;
+            // rotatate
+            public NativeArray<float> z;
+            public void Execute(int index)
+            {
+                // calculate decision array
+                var b = currentAgents[index].m_Brain?.DecideAction();
+
+                // pass decision
+                x[index] = b?[0] ?? 1;
+                y[index] = b?[1] ?? 0;
+                z[index] = b?[2] ?? 0;
+
+            }
+        }
+
 
         #endregion
 
 
-        // [BurstCompile]
-        public struct ReallyToughParallelJob : IJobParallelFor
-        {
-            public NativeArray<float> x;
-            public NativeArray<float> y;
-            public NativeArray<float> z;
 
-            public void Execute(int index)
-            {
-                var b = new NativeArray<float>(currentAgents[index].m_Brain?.DecideAction(), Allocator.Temp);
-                x[index] = b[0];
-                y[index] = b[1];
-                z[index] = b[2];
-            }
-        }
 
 
         /// <summary>
@@ -567,8 +580,6 @@ namespace Unity.MLAgents
 
             using (TimerStack.Instance.Scoped("DecideAction"))
             {
-                //  DecideAction?.Invoke();
-                Debug.Log("DecideActionxd");
                 UpdateAgentDecision();
             }
 

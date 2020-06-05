@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Unity.MLAgents.Sensors
 {
@@ -103,8 +104,11 @@ namespace Unity.MLAgents.Sensors
                 endPositionLocal = PolarToCartesian2D(RayLength, angle);
             }
 
-            var startPositionWorld = Transform.TransformPoint(startPositionLocal);
-            var endPositionWorld = Transform.TransformPoint(endPositionLocal);
+            // var startPositionWorld = Transform.TransformPoint(startPositionLocal);
+            // var endPositionWorld = Transform.TransformPoint(endPositionLocal);
+
+            var startPositionWorld = startPositionLocal;
+            var endPositionWorld = endPositionLocal;
 
             return (StartPositionWorld : startPositionWorld, EndPositionWorld : endPositionWorld);
         }
@@ -209,16 +213,16 @@ namespace Unity.MLAgents.Sensors
 
         public void Reset()
         {
-            m_Frame = Time.frameCount;
+         //   m_Frame = Time.frameCount;
         }
 
         /// <summary>
         /// "Age" of the results in number of frames. This is used to adjust the alpha when drawing.
         /// </summary>
-        public int age
-        {
-            get { return Time.frameCount - m_Frame; }
-        }
+        // public int age
+        // {
+        //     get { return Time.frameCount - m_Frame; }
+        // }
 
         public RayInfo[] rayInfos;
 
@@ -413,42 +417,47 @@ namespace Unity.MLAgents.Sensors
             bool castHit;
             float hitFraction;
             GameObject hitObject;
+            RaycastHit rayHit = new RaycastHit();;
 
             if (input.CastType == RayPerceptionCastType.Cast3D)
             {
-                RaycastHit rayHit;
+
                 if (scaledCastRadius > 0f)
                 {
-                    castHit = Physics.SphereCast(startPositionWorld, scaledCastRadius, rayDirection, out rayHit,
-                        scaledRayLength, input.LayerMask);
+                    // castHit = Physics.SphereCast(startPositionWorld, scaledCastRadius, rayDirection, out rayHit,
+                    //     scaledRayLength, input.LayerMask);
+                    System.Random rnd = new System.Random();
+                    castHit = (rnd.Next(2) == 0);
                 }
                 else
                 {
-                    castHit = Physics.Raycast(startPositionWorld, rayDirection, out rayHit,
-                        scaledRayLength, input.LayerMask);
+                    // castHit = Physics.Raycast(startPositionWorld, rayDirection, out rayHit,
+                    //     scaledRayLength, input.LayerMask);
+                    System.Random rnd = new System.Random();
+                    castHit = (rnd.Next(2) == 0);
                 }
 
                 // If scaledRayLength is 0, we still could have a hit with sphere casts (maybe?).
                 // To avoid 0/0, set the fraction to 0.
                 hitFraction = castHit ? (scaledRayLength > 0 ? rayHit.distance / scaledRayLength : 0.0f) : 1.0f;
-                hitObject = castHit ? rayHit.collider.gameObject : null;
+               // hitObject = castHit ? rayHit.collider.gameObject : null;
             }
             else
             {
-                RaycastHit2D rayHit;
+                RaycastHit2D ray2Hit;
                 if (scaledCastRadius > 0f)
                 {
-                    rayHit = Physics2D.CircleCast(startPositionWorld, scaledCastRadius, rayDirection,
+                    ray2Hit = Physics2D.CircleCast(startPositionWorld, scaledCastRadius, rayDirection,
                         scaledRayLength, input.LayerMask);
                 }
                 else
                 {
-                    rayHit = Physics2D.Raycast(startPositionWorld, rayDirection, scaledRayLength, input.LayerMask);
+                    ray2Hit = Physics2D.Raycast(startPositionWorld, rayDirection, scaledRayLength, input.LayerMask);
                 }
 
-                castHit = rayHit;
-                hitFraction = castHit ? rayHit.fraction : 1.0f;
-                hitObject = castHit ? rayHit.collider.gameObject : null;
+                castHit = ray2Hit;
+                hitFraction = castHit ? ray2Hit.fraction : 1.0f;
+              //  hitObject = castHit ? ray2Hit.collider.gameObject : null;
             }
 
             var rayOutput = new RayPerceptionOutput.RayOutput
@@ -464,12 +473,12 @@ namespace Unity.MLAgents.Sensors
                 // Find the index of the tag of the object that was hit.
                 for (var i = 0; i < input.DetectableTags.Count; i++)
                 {
-                    if (hitObject.CompareTag(input.DetectableTags[i]))
-                    {
+                 //   if (hitObject.CompareTag(input.DetectableTags[i]))
+                 //   {
                         rayOutput.HitTaggedObject = true;
                         rayOutput.HitTagIndex = i;
                         break;
-                    }
+                 //  }
                 }
             }
 

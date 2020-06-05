@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Creature/Scenes/CreatureAcademy.unity
+    guid: 1f50cc07ed9224044ae3df15cccefbfe
   m_configObjects: {}

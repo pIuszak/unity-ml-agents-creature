@@ -41,6 +41,7 @@ namespace Unity.MLAgents.Policies
         public BarracudaPolicy(
             BrainParameters brainParameters,
             NNModel model,
+            string modelName,
             InferenceDevice inferenceDevice)
         {
             var modelRunner = Academy.Instance.GetOrCreateModelRunner(model, brainParameters, inferenceDevice);

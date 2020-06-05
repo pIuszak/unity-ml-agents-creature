@@ -23,6 +23,7 @@ namespace Unity.MLAgents.Inference
         TensorApplier m_TensorApplier;
 
         NNModel m_Model;
+        private string m_ModelName;
         InferenceDevice m_InferenceDevice;
         IWorker m_Engine;
         bool m_Verbose = false;
@@ -56,6 +57,7 @@ namespace Unity.MLAgents.Inference
         {
             Model barracudaModel;
             m_Model = model;
+            m_ModelName = model.name;
             m_InferenceDevice = inferenceDevice;
             m_TensorAllocator = new TensorCachingAllocator();
             if (model != null)
@@ -160,25 +162,25 @@ namespace Unity.MLAgents.Inference
 
             Profiler.BeginSample("ModelRunner.DecideAction");
 
-            Profiler.BeginSample($"MLAgents.{m_Model.name}.GenerateTensors");
+            Profiler.BeginSample($"MLAgents.{m_ModelName}.GenerateTensors");
             // Prepare the input tensors to be feed into the engine
             m_TensorGenerator.GenerateTensors(m_InferenceInputs, currentBatchSize, m_Infos);
             Profiler.EndSample();
 
-            Profiler.BeginSample($"MLAgents.{m_Model.name}.PrepareBarracudaInputs");
+            Profiler.BeginSample($"MLAgents.{m_ModelName}.PrepareBarracudaInputs");
             var inputs = PrepareBarracudaInputs(m_InferenceInputs);
             Profiler.EndSample();
 
             // Execute the Model
-            Profiler.BeginSample($"MLAgents.{m_Model.name}.ExecuteGraph");
+            Profiler.BeginSample($"MLAgents.{m_ModelName}.ExecuteGraph");
             m_Engine.Execute(inputs);
             Profiler.EndSample();
 
-            Profiler.BeginSample($"MLAgents.{m_Model.name}.FetchBarracudaOutputs");
+            Profiler.BeginSample($"MLAgents.{m_ModelName}.FetchBarracudaOutputs");
             m_InferenceOutputs = FetchBarracudaOutputs(m_OutputNames);
             Profiler.EndSample();
 
-            Profiler.BeginSample($"MLAgents.{m_Model.name}.ApplyTensors");
+            Profiler.BeginSample($"MLAgents.{m_ModelName}.ApplyTensors");
             // Update the outputs
             m_TensorApplier.ApplyTensors(m_InferenceOutputs, m_OrderedAgentsRequestingDecisions, m_LastActionsReceived);
             Profiler.EndSample();

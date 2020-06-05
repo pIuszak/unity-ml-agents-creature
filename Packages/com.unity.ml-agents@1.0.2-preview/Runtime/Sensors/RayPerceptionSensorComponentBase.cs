@@ -264,31 +264,31 @@ namespace Unity.MLAgents.Sensors
             }
         }
 
-        void OnDrawGizmosSelected()
-        {
-            if (m_RaySensor?.debugDisplayInfo?.rayInfos != null)
-            {
-                // If we have cached debug info from the sensor, draw that.
-                // Draw "old" observations in a lighter color.
-                // Since the agent may not step every frame, this helps de-emphasize "stale" hit information.
-                var alpha = Mathf.Pow(.5f, m_RaySensor.debugDisplayInfo.age);
-
-                foreach (var rayInfo in m_RaySensor.debugDisplayInfo.rayInfos)
-                {
-                    DrawRaycastGizmos(rayInfo, alpha);
-                }
-            }
-            else
-            {
-                var rayInput = GetRayPerceptionInput();
-                for (var rayIndex = 0; rayIndex < rayInput.Angles.Count; rayIndex++)
-                {
-                    DebugDisplayInfo.RayInfo debugRay;
-                    RayPerceptionSensor.PerceiveSingleRay(rayInput, rayIndex, out debugRay);
-                    DrawRaycastGizmos(debugRay);
-                }
-            }
-        }
+        // void OnDrawGizmosSelected()
+        // {
+        //     if (m_RaySensor?.debugDisplayInfo?.rayInfos != null)
+        //     {
+        //         // If we have cached debug info from the sensor, draw that.
+        //         // Draw "old" observations in a lighter color.
+        //         // Since the agent may not step every frame, this helps de-emphasize "stale" hit information.
+        //         var alpha = Mathf.Pow(.5f, m_RaySensor.debugDisplayInfo.age);
+        //
+        //         foreach (var rayInfo in m_RaySensor.debugDisplayInfo.rayInfos)
+        //         {
+        //             DrawRaycastGizmos(rayInfo, alpha);
+        //         }
+        //     }
+        //     else
+        //     {
+        //         var rayInput = GetRayPerceptionInput();
+        //         for (var rayIndex = 0; rayIndex < rayInput.Angles.Count; rayIndex++)
+        //         {
+        //             DebugDisplayInfo.RayInfo debugRay;
+        //             RayPerceptionSensor.PerceiveSingleRay(rayInput, rayIndex, out debugRay);
+        //             DrawRaycastGizmos(debugRay);
+        //         }
+        //     }
+        // }
 
         /// <summary>
         /// Draw the debug information from the sensor (if available).
