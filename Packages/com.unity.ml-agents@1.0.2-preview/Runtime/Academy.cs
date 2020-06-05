@@ -80,118 +80,27 @@ namespace Unity.MLAgents
 
         // Lazy initializer pattern, see https://csharpindepth.com/articles/singleton#lazy
         static Lazy<Academy> s_Lazy = new Lazy<Academy>(() => new Academy());
+
+        #region Edited by Delivr
+
         static List<Agent> currentAgents = new List<Agent>();
-
-
         public void AddAgent(Agent agent)
         {
             currentAgents.Add(agent);
         }
-
-        #region Edited by Delivr
-
-        //     // private IEnumerator chunkRebuildRoutine;
-        //     //
-        //     // private void StartJobListener()
-        //     // {
-        //     //     if (chunkRebuildRoutine != null)
-        //     //         StopCoroutine(chunkRebuildRoutine);
-        //     //
-        //     //     chunkRebuildRoutine = RebuildRoutine();
-        //     //
-        //     //     StartCoroutine(chunkRebuildRoutine);
-        //     // }
-        //     public void DecideActionUpdate()
-        //     {
-        //         // Get Decision from Brain
-        //         NativeArray<JobHandle> jobHandleList = new NativeArray<JobHandle>(currentAgents.Count, Allocator.Temp);
-        //         for (var index = 0; index < currentAgents.Count; index++)
-        //         {
-        //             var agent = currentAgents[index];
-        //             JobHandle jobHandle = ReallyToughTaskJob();
-        //             jobHandleList[index] = jobHandle;
-        //         }
-        //
-        //         JobHandle.CompleteAll(jobHandleList);
-        //
-        //         // PostProcess data calculated in Job
-        //         for (var index = 0; index < currentAgents.Count; index++)
-        //         {
-        //             // todo get data from job
-        //            // currentAgents[index].DecideActionPostProcessing();
-        //         }
-        //         jobHandleList.Dispose();
-        //     }
-        //
-        //     private JobHandle ReallyToughTaskJob() {
-        //         var job = new Agent.ReallyToughJob();
-        //         return job.Schedule();
-        //     }
-        //
-        // //  private IEnumerator PostProcessing()
-        // // {
-        // //
-        // //     while(true)
-        // //     {
-        // //         if (currentChunkRebuildJob.IsCompleted)
-        // //         {
-        // //
-        // //         }
-        // //
-        // //         yield return null;
-        // //     }
-        // // }
-        //
-        //     ReallyToughParallelJob reallyToughParallelJob = new ReallyToughParallelJob {
-        //         positionArray = positionArray,
-        //     moveYArray = moveYArray,
-        // };
-
-        // JobHandle jobHandle = reallyToughParallelJob.Schedule(zombieList.Count, 100);
-        // jobHandle.Complete();
-
-        #endregion
-
-        #region Edited by Delivr
-
-        //   public void UpdateAgentDecision()
-        //   {
-        //     //  NativeArray<JobHandle> jobHandleList = new NativeArray<JobHandle>(currentAgents.Count, Allocator.Temp);
-        //
-        //       public NativeArray<NativeArray<float>> agentBrainTempArray;
-        //
-        // for (int i = 0; i <currentAgents.Count; i++)
-        // {
-        //     agentBrainTempArray[i] = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
-        // }
-        //
-
-
-
-        public void UpdateAgentBrain()
+        public void UpdateAgentDecision()
         {
             Debug.Log("UpdateAgentBrain");
-            // -- this is wrong --
-            // todo new system that simulates nested ativeArrays
-            NativeArray<NativeArray<float>> agentBrainTempArray = new NativeArray<NativeArray<float>>();
-           // NativeArray<NativeArray<float>> allAgentBrainTempArray = new NativeArray<NativeArray<float>>();
 
-           NativeArray<float> x = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
-           NativeArray<float> y = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
-           NativeArray<float> z = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
+            NativeArray<float> x = new NativeArray<float>(currentAgents.Count, Allocator.TempJob);
+            NativeArray<float> y = new NativeArray<float>(currentAgents.Count, Allocator.TempJob);
+            NativeArray<float> z = new NativeArray<float>(currentAgents.Count, Allocator.TempJob);
 
-
-            // set job to calculate agent's decision
-            for (int i = 0; i <currentAgents.Count; i++)
+            ReallyToughParallelJob reallyToughParallelJob = new ReallyToughParallelJob
             {
-                NativeArray<float> b = new NativeArray<float>(3, Allocator.Temp);
-               // b =
-                agentBrainTempArray[i] = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
-            }
-
-            //
-                ReallyToughParallelJob reallyToughParallelJob = new ReallyToughParallelJob {
-                    agentBrainArray = agentBrainTempArray,
+                x = x,
+                y = y,
+                z = z
             };
 
             JobHandle jobHandle = reallyToughParallelJob.Schedule(currentAgents.Count, 4);
@@ -199,9 +108,9 @@ namespace Unity.MLAgents
 
             // update agent's decision
 
-            for (int i = 0; i <currentAgents.Count; i++)
+            for (int i = 0; i < currentAgents.Count; i++)
             {
-                currentAgents[i].DecideActionPostProcessing(agentBrainTempArray[i].ToArray());
+                currentAgents[i].DecideActionPostProcessing(new float[3] {x[i], y[i], z[i]});
             }
         }
 
@@ -211,40 +120,17 @@ namespace Unity.MLAgents
         // [BurstCompile]
         public struct ReallyToughParallelJob : IJobParallelFor
         {
+            public NativeArray<float> x;
+            public NativeArray<float> y;
+            public NativeArray<float> z;
 
             public void Execute(int index)
             {
-                NativeArray<float> x = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
-                NativeArray<float> y = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
-                NativeArray<float> z = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
-                NativeArray<float> tempBrain = new NativeArray<float>(currentAgents.Count,Allocator.TempJob);
-
-                // set job to calculate agent's decision
-                for (int i = 0; i <currentAgents.Count; i++)
-                {
-                    //NativeArray<float> b = new NativeArray<float>(3, Allocator.Temp);
-                    var b = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
-                    x[i] = b[0];
-                    y[i] = b[1];
-                    z[i] = b[2];
-                    // agentBrainTempArray[i] = new NativeArray<float>(currentAgents[i].m_Brain?.DecideAction(), Allocator.Temp);
-                }
-
+                var b = new NativeArray<float>(currentAgents[index].m_Brain?.DecideAction(), Allocator.Temp);
+                x[index] = b[0];
+                y[index] = b[1];
+                z[index] = b[2];
             }
-
-            // public void Execute(int index) {
-            //     positionArray[index] += new float3(0, moveYArray[index] * deltaTime, 0f);
-            //     if (positionArray[index].y > 5f) {
-            //         moveYArray[index] = -math.abs(moveYArray[index]);
-            //     }
-            //     if (positionArray[index].y < -5f) {
-            //         moveYArray[index] = +math.abs(moveYArray[index]);
-            //     }
-            //     float value = 0f;
-            //     for (int i = 0; i < 1000; i++) {
-            //         value = math.exp10(math.sqrt(value));
-            //     }
-            // }
         }
 
 
@@ -681,9 +567,9 @@ namespace Unity.MLAgents
 
             using (TimerStack.Instance.Scoped("DecideAction"))
             {
-              //  DecideAction?.Invoke();
-              Debug.Log("DecideActionxd");
-              UpdateAgentBrain();
+                //  DecideAction?.Invoke();
+                Debug.Log("DecideActionxd");
+                UpdateAgentDecision();
             }
 
             // If the communicator is not on, we need to clear the SideChannel sending queue
